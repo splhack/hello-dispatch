@@ -25,6 +25,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <unistd.h>
+
+#include <dispatch/dispatch.h>
+extern "C" void _dispatch_queue_serial_drain_till_empty(dispatch_queue_t dq);
 
 #define  LOG_TAG    "libgl2jni"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
@@ -122,6 +126,17 @@ GLuint gProgram;
 GLuint gvPositionHandle;
 
 bool setupGraphics(int w, int h) {
+    dispatch_queue_t q =
+        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(q, ^{
+
+        sleep(5);
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            LOGI("libdispatch");
+        });
+    });
+
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);
@@ -181,4 +196,6 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobj
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobject obj)
 {
     renderFrame();
+
+    _dispatch_queue_serial_drain_till_empty(dispatch_get_main_queue());
 }

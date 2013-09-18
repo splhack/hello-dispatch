@@ -20,5 +20,7 @@ LOCAL_MODULE    := libgl2jni
 LOCAL_CFLAGS    := -Werror
 LOCAL_SRC_FILES := gl_code.cpp
 LOCAL_LDLIBS    := -llog -lGLESv2
+LOCAL_SHARED_LIBRARIES := dispatch
 
 include $(BUILD_SHARED_LIBRARY)
+include libdispatch/Android.mk
