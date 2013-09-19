@@ -132,7 +132,7 @@ bool setupGraphics(int w, int h) {
 
         sleep(5);
 
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), []{
             LOGI("libdispatch");
         });
     });
